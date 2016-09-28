@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -55,8 +56,15 @@ public class PageRank {
 		HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
 
 		int size = graph.get(0).size();
-		int r = rand.nextInt(size);
-		int to = graph.get(0).get(r);
+		int r = 0;
+		int to = 0;;
+		if (size != 0) {
+			r = rand.nextInt(size);
+			to = graph.get(0).get(r);
+		} else {
+			to = 0;
+		}
+
 
 		for (int i = 0; i < iterations; i++) {
 
@@ -85,24 +93,67 @@ public class PageRank {
 				to = rand.nextInt(size);
 			}
 		}
-		
+
 		for (Integer key : res.keySet()) {
 			System.out.println("Page: " + key + " \tvisited: " + res.get(key));
 		}
+		System.out.println();
 	}
 
 	public static void main(String[] args) {
-		
-		PageRank pr = new PageRank("input/medium.txt");
-		
-		int iterations = 1000;
-		
-		pr.randomSurf(iterations);
+
+		if (args.length != 1) {
+			System.out.println("Needs to give number of iterations");
+			System.exit(1);
+		}
+
+		int iterations = 0;
+
 		try {
+
+			iterations = Integer.parseInt(args[0]);
 
 		} catch (NumberFormatException e) {
 			System.out.println("Only numbers allowed");
 			System.exit(1);
+		}
+
+
+		Scanner scan = new Scanner(System.in);
+		File[] files = new File("input/").listFiles();
+
+		while (true) {
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isFile()) {
+					System.out.println("Press " + i + " for " + files[i].getName() + " as input file");
+				}
+			}
+			System.out.println("Press 42 for quit");
+			int choice;
+			String filename = "";
+			
+			
+			try {
+				choice = scan.nextInt();
+				
+				if (choice == 42) {
+					System.out.println("HEJDÅ");
+					System.exit(0);
+				} else {
+					filename = files[choice].getPath();
+				}
+				
+			} catch (InputMismatchException e) {
+				System.out.println("Only numbers!!");
+				continue;
+			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("Only right numbers!!!");
+				continue;
+			}
+			
+			PageRank pr = new PageRank(filename);
+			pr.randomSurf(iterations);
+
 		}
 
 	}
