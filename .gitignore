@@ -1,0 +1,12 @@
+#General
+bin/
+out/
+
+#Eclipse project
+.metadata/
+.classpath
+.project
+
+#IntelliJ project
+.idea/
+*.iml
